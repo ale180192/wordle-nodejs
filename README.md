@@ -16,3 +16,8 @@ migrations
 ```bash
 npm run migration:run
 ```
+
+#### Load dummy data
+```bash
+npm run db:seed
+```

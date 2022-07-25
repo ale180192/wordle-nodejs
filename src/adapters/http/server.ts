@@ -11,6 +11,10 @@ import ErrorCodes from './errors.http';
 import LoginDtoRequest from './dto/requests/login.dto.request';
 import LoginDtoResponse from './dto/responses/login.dto.response';
 import AuthException from '../../services/exceptions/auth.exception';
+import authJwt from './middlewares/auth.middleware';
+import GameDtoRequest from './dto/requests/game.dto.request';
+
+
 
 const ajv = new Ajv();
 
@@ -125,9 +129,21 @@ export class Server {
             }
         })
 
-        this.app.post('/api/v1/users', async (req: any, res: any) => {
-            console.log(res);
-            return res.json("ok");
+        this.app.get('/wordle/v1/game', async (req: any, res: any) => {
+            // const schema: JSONSchemaType<GameDtoRequest> = {
+            //     type: "object",
+            //     properties: {
+            //         word: {type: "string", nullable: false, maxLength: 5, minLength: 5},
+            //     },
+            //     required: ["email", "password"],
+            //     additionalProperties: false
+            // }
+            // const validate = ajv.compile(schema);
+            // const userRepository = new GameSqlRepository();
+            // const service = new AuthUserService(userRepository);
+            // const loginDtoRequest = {
+            //     email: req.body.email, password: req.body.password
+            // };
         })
     }
 

@@ -10,6 +10,10 @@
         "outDir": "dist",
         "baseUrl": ".",
         "strictNullChecks": true,
+        "typeRoots": ["src/types",],
+        "types": [
+            "node",
+        ],
         "paths": {
             "*": [
                 "node_modules/*",

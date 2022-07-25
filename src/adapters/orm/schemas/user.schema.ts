@@ -32,5 +32,12 @@ export const UserEntity = new EntitySchema<IUser>({
         {
           columns: ["email",]
         }
-      ]
+    ],
+    // relations: {
+    //     games: {
+    //       target: 'game',
+    //       type: 'many-to-one',
+    //       inverseSide: 'user_id',
+    //     },
+    // },
 })
