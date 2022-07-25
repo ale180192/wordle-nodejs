@@ -5,14 +5,17 @@ import cors from 'cors';
 import * as bcrypt from 'bcrypt';
 import { UserSqlRepository } from '../repositories/user.repository';
 import AuthUserService from '../../services/auth.service'
-import EmailAlreadyRegisteredException from '../repositories/exceptions';
+import EmailAlreadyRegisteredException from '../../services/exceptions/gameExpired.exception';
 import HttpUtils from './utils.http';
 import ErrorCodes from './errors.http';
 import LoginDtoRequest from './dto/requests/login.dto.request';
 import LoginDtoResponse from './dto/responses/login.dto.response';
 import AuthException from '../../services/exceptions/auth.exception';
-import authJwt from './middlewares/auth.middleware';
 import GameDtoRequest from './dto/requests/game.dto.request';
+import GameSqlRepository from '../repositories/game.repository';
+import GameService from '../../services/game.service';
+import authJwt from './middlewares/auth.middleware';
+import AppDataSource from '../../conf/dataSource';
 
 
 
@@ -22,6 +25,7 @@ export class Server {
     app: any;
     port: string;
     corsOptions: object;
+    dataSource: any;
 
     constructor(conf: any) {
         this.app = express();
@@ -129,21 +133,58 @@ export class Server {
             }
         })
 
-        this.app.get('/wordle/v1/game', async (req: any, res: any) => {
-            // const schema: JSONSchemaType<GameDtoRequest> = {
-            //     type: "object",
-            //     properties: {
-            //         word: {type: "string", nullable: false, maxLength: 5, minLength: 5},
-            //     },
-            //     required: ["email", "password"],
-            //     additionalProperties: false
-            // }
-            // const validate = ajv.compile(schema);
-            // const userRepository = new GameSqlRepository();
-            // const service = new AuthUserService(userRepository);
-            // const loginDtoRequest = {
-            //     email: req.body.email, password: req.body.password
-            // };
+        this.app.post('/wordle/v1/game', authJwt, async (req: any, res: any) => {
+            try {
+                    const gameRepository = new GameSqlRepository();
+                    const service = new GameService(gameRepository);
+                    const game = await service.create(req.user.user_id);
+                    return HttpUtils.response_success(res, game, 201);
+                } catch (err) {
+                    return HttpUtils.response_error(res, ErrorCodes.UNKNOW, 400)
+                }
+        })
+
+        this.app.post('/wordle/v1/game/:gameId/intent', authJwt, async (req: any, res: any) => {
+            const schema: JSONSchemaType<GameDtoRequest> = {
+                type: "object",
+                properties: {
+                    word: {type: "string", nullable: false, maxLength: 5, minLength: 5},
+                },
+                required: ["word",],
+                additionalProperties: false
+            }
+            const validate = ajv.compile(schema);
+            const gameDtoRequest: GameDtoRequest = {word: req.body.word};;
+            if (validate(gameDtoRequest)) {
+                try {
+                    const gameRepository = new GameSqlRepository();
+                    const service = new GameService(gameRepository);
+                    const intentResult = await service.intentWord(gameDtoRequest.word, req.params.gameId)
+                    return HttpUtils.response_success(res, intentResult, 201);
+                } catch (err) {
+                    if (err.constructor.name === 'GameExpiredException') {
+                        return HttpUtils.response_error(res, ErrorCodes.GAME_HAS_EXPIRED, 409)
+
+                    } else if (err.constructor.name === 'ZeroRemainingIntentsException') {
+                        return HttpUtils.response_error(res, ErrorCodes.REMAINING_INTENTS_ZERO, 409)
+
+                    } else if (err.constructor.name === 'GameWonException') {
+                        return HttpUtils.response_error(res, ErrorCodes.GAME_WON, 409)
+
+                    } else {
+                        return HttpUtils.response_error(res, ErrorCodes.UNKNOW, 400)
+                    }
+                }
+            } else {
+                return HttpUtils.response_error(res, ErrorCodes.BAD_REQUEST, 400, validate.errors)
+            }
+        })
+
+        this.app.get('/wordle/v1/game/metrics', authJwt, async (req: any, res: any) => {
+            const gameRepository = new GameSqlRepository();
+            const service = new GameService(gameRepository);
+            const metrics = await service.metrics();
+            return HttpUtils.response_success(res, metrics, 200);
         })
     }
 
@@ -151,6 +192,13 @@ export class Server {
         this.app.listen(this.port, () => {
             console.log(`API REST Listen on the port ${this.port}`)
         })
+        AppDataSource.initialize()
+            .then(() => {
+                console.log("Data Source has been initialized!")
+            })
+            .catch((err) => {
+                console.error("Error during Data Source initialization", err)
+            })
     }
 
 }

@@ -10,9 +10,6 @@ export const WordIntentEntity = new EntitySchema<IWordIntent>({
             primary: true,
             generated: true,
         },
-        game: {
-            type: 'uuid',
-        },
         wordReceived: {
             type: String,
         },

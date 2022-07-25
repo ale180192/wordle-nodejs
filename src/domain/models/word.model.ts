@@ -1,5 +1,5 @@
 export class Word {
-    _id: string;
+    id: string;
     name: string
     tiemesWasGuessed: number
     available: boolean

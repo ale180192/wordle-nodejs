@@ -9,14 +9,16 @@ export const GameEntity = new EntitySchema<IGame>({
             primary: true,
             generated: true,
         },
-        user: {
-            type: 'uuid',
-        },
-        word: {
-            type: 'uuid',
-        },
         ramainingAttempts: {
             type: Number,
+        },
+        won: {
+            type: Boolean,
+            default: false
+        },
+        dateStart: {
+            type: Date,
+            createDate: true
         },
     },
     uniques: [
@@ -24,16 +26,16 @@ export const GameEntity = new EntitySchema<IGame>({
           columns: ["user", "word",]
         }
     ],
-    // relations: {
-    //     user: {
-    //         target: 'user',
-    //         type: 'many-to-one',
-    //         joinColumn: true,
-    //     },
-    //     word: {
-    //         target: 'word',
-    //         type: 'many-to-one',
-    //         joinColumn: true,
-    //     },
-    // },
+    relations: {
+        user: {
+            target: 'user',
+            type: 'many-to-one',
+            joinColumn: true,
+        },
+        word: {
+            target: 'word',
+            type: 'many-to-one',
+            joinColumn: true,
+        },
+    },
 })

@@ -5,10 +5,10 @@ const AppDataSource = new DataSource({
     database: "database",
     migrationsRun: false,
     entities: [
-        "dist/adapters/orm/schemas/*.{ts,js}"
+        "src/adapters/orm/schemas/*.{ts,js}"
     ],
     migrations: [
-        "dist/adapters/orm/migrations/*.{ts,js}"
+        "src/adapters/orm/migrations/*.{ts,js}"
     ],
 });
 

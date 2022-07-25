@@ -1,7 +1,7 @@
 import IGame from './game.model.interface';
 
 export class WordIntent {
-    _id: string;
+    id: string;
     game: IGame;
     wordReceived: string;
 

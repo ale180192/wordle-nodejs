@@ -10,14 +10,17 @@
         "outDir": "dist",
         "baseUrl": ".",
         "strictNullChecks": true,
-        "typeRoots": ["src/types",],
+        "typeRoots": ["src/types/",],
         "types": [
+            "jest",
+            "mocha",
             "node",
+            "express",
         ],
         "paths": {
             "*": [
                 "node_modules/*",
-                "src/types/*"
+                "src/types"
             ]
         }
     },

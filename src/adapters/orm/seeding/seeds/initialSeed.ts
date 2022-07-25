@@ -18,38 +18,46 @@ export default class CreateUsers {
         .insert()
           .into(UserEntity)
           .values([
-                {name: "alex", email: "alex1@test.com", password: pwd, token: "", gamesPlayed: 0, gamesWon: 0},
-                {name: "alex", email: "alex2@test.com", password: pwd, token: "", gamesPlayed: 0, gamesWon: 0},
+                // {name: "alex", email: "alex1@test.com", password: pwd, token: "", gamesPlayed: 0, gamesWon: 0},
+                // {name: "alex", email: "alex2@test.com", password: pwd, token: "", gamesPlayed: 0, gamesWon: 0},
+                {name: "alex", email: "alex3@test.com", password: pwd, token: "", gamesPlayed: 0, gamesWon: 0},
+                {name: "alex", email: "alex4@test.com", password: pwd, token: "", gamesPlayed: 0, gamesWon: 0},
+                {name: "alex", email: "alex5@test.com", password: pwd, token: "", gamesPlayed: 0, gamesWon: 0},
+                {name: "alex", email: "alex6@test.com", password: pwd, token: "", gamesPlayed: 0, gamesWon: 0},
+                {name: "alex", email: "alex7@test.com", password: pwd, token: "", gamesPlayed: 0, gamesWon: 0},
+                {name: "alex", email: "alex8@test.com", password: pwd, token: "", gamesPlayed: 0, gamesWon: 0},
+                {name: "alex", email: "alex9@test.com", password: pwd, token: "", gamesPlayed: 0, gamesWon: 0},
+                {name: "alex", email: "alex10@test.com", password: pwd, token: "", gamesPlayed: 0, gamesWon: 0},
           ])
           .execute()
     } catch (error) {
         console.log("users already exist.");
     }
-    try {
+    // try {
 
-        const fileStream = fs.createReadStream(path.join(__dirname, 'words.txt'));
-        const rl = readline.createInterface({
-          input: fileStream,
-          crlfDelay: Infinity
-        });
-        const words: any[] = [];
-        for await (const line of rl) {
-            if (line.length === 5) {
-                words.push({name: line, tiemesWasGuessed: 0, available: true});
-            }
-        }
-        await AppDataSource
-        .getRepository(WordEntity)
-        .createQueryBuilder("WordEntity")
-        .insert()
-          .into(WordEntity)
-          .values(words)
-          .execute()
-        await AppDataSource.destroy();
-    } catch (error) {
-        console.log(error);
-        console.log("words already exist.");
-    }
+//         const fileStream = fs.createReadStream(path.join(__dirname, 'words.txt'));
+//         const rl = readline.createInterface({
+//           input: fileStream,
+//           crlfDelay: Infinity
+//         });
+//         const words: any[] = [];
+//         for await (const line of rl) {
+//             if (line.length === 5) {
+//                 words.push({name: line, tiemesWasGuessed: 0, available: true});
+//             }
+//         }
+//         await AppDataSource
+//         .getRepository(WordEntity)
+//         .createQueryBuilder("WordEntity")
+//         .insert()
+//           .into(WordEntity)
+//           .values(words)
+//           .execute()
+//         await AppDataSource.destroy();
+//     } catch (error) {
+//         console.log(error);
+//         console.log("words already exist.");
+//     }
   }
 }
 
